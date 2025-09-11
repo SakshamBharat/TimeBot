@@ -51,6 +51,20 @@ app.get('/timetable/section/:section', async (req, res) => {
 
   res.render('timetable', { timetable });
 });
+// JSON API route
+app.get('/api/timetable/section/:section', async (req, res) => {
+  const { section } = req.params;
+
+  const timetable = await Timetable.findOne({
+    section: new RegExp(`^${section}$`, 'i')
+  });
+
+  if (!timetable) {
+    return res.status(404).json({ error: `Timetable not found for section: ${section}` });
+  }
+
+  res.json(timetable);
+});
 
 // Add slot to timetable
 app.post('/add-slot', async (req, res) => {
