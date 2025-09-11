@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TimeBot - Timetable</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Timetable: Section <%= timetable.section %></h1>
+  <p><strong>Course:</strong> <%= timetable.course %></p>
+  <p><strong>Year:</strong> <%= timetable.year %></p>
+  <p><strong>Branch:</strong> <%= timetable.branch %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <% ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => { %>
+          <th><%= day %></th>
+        <% }); %>
+      </tr>
+    </thead>
+    <tbody>
+      <% const times = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '14:00-15:00', '15:00-16:00', '16:00-17:00']; %>
+      <% times.forEach(time => { %>
+        <tr>
+          <td><%= time %></td>
+          <% ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
+            const slot = timetable.slots.find(s => s.day === day && s.time === time);
+          %>
+            <td class="slot" data-day="<%= day %>" data-time="<%= time %>" data-section="<%= timetable.section %>">
+              <% if (slot) { %>
+                <div class="<%= slot.type.toLowerCase() %>">
+                  <strong><%= slot.subject %></strong><br/>
+                  <em><%= slot.teacher %></em><br/>
+                  <small><%= slot.classroom %></small><br/>
+                  (<%= slot.type %>)
+                </div>
+              <% } %>
+            </td>
+          <% }); %>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <form id="modalForm">
+      <input type="hidden" name="day" id="modalDay">
+      <input type="hidden" name="time" id="modalTime">
+      <input type="hidden" name="section" id="modalSection">
+
+      <label>Subject: <input type="text" name="subject" required></label><br>
+      <label>Teacher: <input type="text" name="teacher" required></label><br>
+      <label>Type:
+        <select name="type">
+          <option value="Lecture">Lecture</option>
+          <option value="Lab">Lab</option>
+        </select>
+      </label><br>
+      <label>Classroom No: <input type="text" name="classroom" required></label><br>
+
+      <button type="submit">Save</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    document.querySelectorAll('.slot').forEach(cell => {
+      cell.addEventListener('click', () => {
+        document.getElementById('modalDay').value = cell.dataset.day;
+        document.getElementById('modalTime').value = cell.dataset.time;
+        document.getElementById('modalSection').value = cell.dataset.section;
+        document.getElementById('modal').style.display = 'block';
+      });
+    });
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    document.getElementById('modalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const response = await fetch('/add-slot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          alert('Failed to add slot: ' + error);
+          return;
+        }
+
+        window.location.reload();
+      } catch (err) {
+        console.error('Error submitting slot:', err);
+        alert('Something went wrong while adding the slot.');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+#formBox {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 80%;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+.slot {
+    cursor: pointer;
+    min-height: 60px;
+}
+.lecture {
+    background-color: #d9edf7;
+}
+.lab {
+    background-color: #dff0d8;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 30%;
+    width: 40%;
+    background: white;
+    border: 2px solid #444;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.timetable-list {
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 1px solid #ccc;
+}
+
+.timetable-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.timetable-list li {
+    padding: 8px 0;
+}
+
+.timetable-list a {
+    color: #007bff;
+    text-decoration: none;
+}
